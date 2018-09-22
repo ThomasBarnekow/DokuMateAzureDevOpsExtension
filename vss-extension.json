@@ -13,7 +13,7 @@
   "categories": ["Build and release"],
   "repository": {
     "type": "git",
-    "uri": "https://github.com/ThomasBarnekow/[enter-repo-name]"
+    "uri": "https://github.com/ThomasBarnekow/DokuMateAzureDevOpsExtension"
   },
   "tags": ["DokuMate", "REST", "WordPress"],
   "icons": {

@@ -1,0 +1,37 @@
+{
+  "manifestVersion": 1,
+  "id": "dokumate-devops-tools",
+  "version": "0.4.3",
+  "name": "DokuMate DevOps Tools",
+  "description": "Collection of DokuMate Azure DevOps tasks",
+  "publisher": "ThomasBarnekow",
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "categories": ["Build and release"],
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/ThomasBarnekow/[enter-repo-name]"
+  },
+  "tags": ["DokuMate", "REST", "WordPress"],
+  "icons": {
+    "default": "images/extension-icon.png"
+  },
+  "files": [
+    {
+      "path": "releaseTask"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "release-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": ["ms.vss-distributed-task.tasks"],
+      "properties": {
+        "name": "releaseTask"
+      }
+    }
+  ]
+}

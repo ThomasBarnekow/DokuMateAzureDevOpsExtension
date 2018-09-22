@@ -1,0 +1,26 @@
+{
+  "name": "dokumate-release-task",
+  "version": "0.1.0",
+  "description": "DokuMate Release Task",
+  "main": "./build/task.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --project .",
+    "postbuild": "npm run package",
+    "package": "tfx extension create --root .. --output-path ..",
+    "gallery-publish": "tfx extension publish --root .. --output-path .. --token %PAT% --share-with dokumate --rev-version"
+  },
+  "author": "Thomas Barnekow",
+  "license": "ISC",
+  "dependencies": {
+    "@types/glob": "^7.1.0",
+    "axios": "^0.18.0",
+    "glob": "^7.1.3",
+    "util": "^0.11.0",
+    "vsts-task-lib": "^2.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^10.10.1",
+    "@types/q": "^1.5.1"
+  }
+}

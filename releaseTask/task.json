@@ -1,0 +1,89 @@
+{
+  "id": "aba2fe80-bd1c-11e8-a5c5-93cca7ba505c",
+  "name": "DokuMateReleaseTask",
+  "friendlyName": "DokuMate Release Task",
+  "description": "Publishes a software package on a WordPress site",
+  "author": "Thomas Barnekow",
+  "helpMarkDown": "Publishes a software package as a new Download Manager download version, using a REST endpoint created by the DokuMate WordPress plugin",
+  "category": "Utility",
+  "visibility": ["Release"],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "4",
+    "Patch": "2"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "DokuMate Release Task",
+  "inputs": [
+    {
+      "name": "localFolder",
+      "type": "filePath",
+      "label": "Local Folder",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Local folder containing the software package or other file identified by the File Pattern"
+    },
+    {
+      "name": "filePattern",
+      "type": "string",
+      "label": "File Pattern",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "File name or pattern identifying software package or other file (e.g., '\\*.exe', '\\*.msi')"
+    },
+    {
+      "name": "wordPressURL",
+      "type": "string",
+      "label": "WordPress URL",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "HTTPS URL of WordPress site (e.g., 'https://domain.com')"
+    },
+    {
+      "name": "remoteFolder",
+      "type": "string",
+      "label": "Remote Folder",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Remote folder containing the downloadable software package or other file (e.g., 'path/to/folder')"
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "label": "Download Title",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Download title as displayed in WordPress (e.g., 'DokuMate for Office')"
+    },
+    {
+      "name": "version",
+      "type": "string",
+      "label": "Download Version",
+      "defaultValue": "$(Release.Artifacts.{alias}.BuildNumber)",
+      "required": true,
+      "helpMarkDown": "Download version number (e.g., '2.8.3', '$(Release.Artifacts.{alias}.BuildNumber)')"
+    },
+    {
+      "name": "wordPressUsername",
+      "type": "string",
+      "label": "WordPress Username",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Username of WordPress user with at least Editor rights"
+    },
+    {
+      "name": "wordPressPassword",
+      "type": "string",
+      "label": "WordPress Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Password of WordPress user"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "./build/task.js"
+    }
+  }
+}

@@ -53,7 +53,7 @@ export class DokuMateReleaseClient {
   }
 
   /**
-   * Publishes a new download version if it does not yet exist.
+   * Publishes a new download version.
    *
    * @param title   The parent download's title
    * @param version The version string, e.g., "2.8.2"
@@ -69,12 +69,6 @@ export class DokuMateReleaseClient {
     }
 
     const download: IDownload = await this.getOrCreateDownloadAsync(title);
-    const downloadVersions: IDownloadVersion[] = await this.getDownloadVersionsAsync(download.id);
-    let downloadVersion: IDownloadVersion = downloadVersions.find(v => v.version === version);
-    if (downloadVersion) {
-      return downloadVersion;
-    }
-
     return await this.postDownloadVersionAsync(download.id, version, url);
   }
 

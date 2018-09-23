@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "dokumate-devops-tools",
-  "version": "0.4.3",
+  "version": "0.5.2",
   "name": "DokuMate DevOps Tools",
   "description": "Collection of DokuMate Azure DevOps tasks",
   "publisher": "ThomasBarnekow",
@@ -21,16 +21,16 @@
   },
   "files": [
     {
-      "path": "releaseTask"
+      "path": "wordPressDownloadPublishingTask"
     }
   ],
   "contributions": [
     {
-      "id": "release-task",
+      "id": "wordpress-download-publishing-task",
       "type": "ms.vss-distributed-task.task",
       "targets": ["ms.vss-distributed-task.tasks"],
       "properties": {
-        "name": "releaseTask"
+        "name": "wordPressDownloadPublishingTask"
       }
     }
   ]

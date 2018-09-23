@@ -1,22 +1,22 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from "axios";
-import { IJwtAuthResponseData, IDownload, IDownloadVersion } from "./interfaces";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
+import { IJwtAuthUserCredentials, IDownload, IDownloadVersion } from "./interfaces";
 
 /**
- * DokuMate Release REST Client.
+ * Download Monitor REST Client.
  */
-export class DokuMateReleaseClient {
+export class DownloadMonitorRestClient {
   authEndpoint: string;
-  dokuMateBaseURL: string;
+  downloadMonitorBaseURL: string;
   axiosInstance: AxiosInstance;
 
   /**
    * Instantiates a new DokuMateReleaseClient, using the given wordPressURL.
    *
-   * @param wordPressURL The fully qualified domain name of the Wordpress site
+   * @param wordPressURL The Wordpress site's URL
    */
   public constructor(wordPressURL: string) {
     this.authEndpoint = `${wordPressURL}/wp-json/jwt-auth/v1/token/`;
-    this.dokuMateBaseURL = `${wordPressURL}/wp-json/dokumate/v1/`;
+    this.downloadMonitorBaseURL = `${wordPressURL}/wp-json/download-monitor/v1/`;
 
     this.axiosInstance = null;
   }
@@ -33,7 +33,7 @@ export class DokuMateReleaseClient {
     this.axiosInstance = null;
 
     // authenticate with WordPress server.
-    let authResponse: AxiosResponse<IJwtAuthResponseData> = await axios.post(this.authEndpoint, {
+    let authResponse: AxiosResponse<IJwtAuthUserCredentials> = await axios.post(this.authEndpoint, {
       username: username,
       password: password
     });
@@ -44,7 +44,7 @@ export class DokuMateReleaseClient {
 
     // create the axios instance to be used in authenticated requests.
     this.axiosInstance = axios.create({
-      baseURL: this.dokuMateBaseURL,
+      baseURL: this.downloadMonitorBaseURL,
       timeout: 2000,
       headers: {
         Authorization: `Bearer ${authResponse.data.token}`
@@ -53,11 +53,12 @@ export class DokuMateReleaseClient {
   }
 
   /**
-   * Publishes a new download version.
+   * Publishes a new download version, creating the parent download if there is
+   * no download with the given title.
    *
    * @param title   The parent download's title
    * @param version The version string, e.g., "2.8.2"
-   * @param url     The published file's URL, e.g., "https://dokumate.com/SoftwareUpdate/Setup.exe"
+   * @param url     The published file's URL, e.g., "https://domain.com/SoftwareUpdate/Setup.exe"
    */
   public async publishDownloadVersionAsync(
     title: string,
@@ -68,17 +69,38 @@ export class DokuMateReleaseClient {
       throw new Error("The client is not authenticated.");
     }
 
-    const download: IDownload = await this.getOrCreateDownloadAsync(title);
-    return await this.postDownloadVersionAsync(download.id, version, url);
+    if (title === null || title.trim().length === 0) {
+      throw new Error("Title must be a non-empty string.");
+    }
+
+    if (version === null || version.trim().length === 0) {
+      throw new Error("Version must be a non-empty string.");
+    }
+
+    if (url === null || url.trim().length === 0) {
+      throw new Error("URL must be a non-empty string.");
+    }
+
+    const download: IDownload = await this.readOrCreateDownloadAsync(title);
+    return await this.createDownloadVersionAsync(download.id, version, url);
   }
 
-  private async getOrCreateDownloadAsync(title: string): Promise<IDownload> {
-    const downloads: IDownload[] = await this.getDownloadsAsync();
-    const download: IDownload = downloads.find(d => d.title === title);
-    return download ? download : await this.postDownloadAsync(title);
+  private async readOrCreateDownloadAsync(title: string): Promise<IDownload> {
+    // we'll make sure titles don't contain leading or trailing spaces
+    const trimmedTitle: string = title.trim();
+    const upperCaseTitle: string = trimmedTitle.toUpperCase();
+
+    // find download with matching title, ignoring case
+    const downloads: IDownload[] = await this.readDownloadsAsync();
+    const download: IDownload = downloads.find(
+      d => d.title !== null && d.title.trim().toUpperCase() === upperCaseTitle
+    );
+
+    // return the matching download, if any, or create a new one with the desired title.
+    return download ? download : await this.createDownloadAsync(trimmedTitle);
   }
 
-  private async getDownloadsAsync(): Promise<IDownload[]> {
+  private async readDownloadsAsync(): Promise<IDownload[]> {
     const response: AxiosResponse<IDownload[]> = await this.axiosInstance.get("downloads");
     if (response.status !== 200) {
       throw new Error(`Could not retrieve downloads: "${response.statusText}".`);
@@ -87,7 +109,7 @@ export class DokuMateReleaseClient {
     return response.data;
   }
 
-  private async postDownloadAsync(title: string): Promise<IDownload> {
+  private async createDownloadAsync(title: string): Promise<IDownload> {
     const response: AxiosResponse<IDownload> = await this.axiosInstance.post("downloads", {
       title: title
     });
@@ -98,7 +120,7 @@ export class DokuMateReleaseClient {
     return response.data;
   }
 
-  private async getDownloadVersionsAsync(downloadId: number): Promise<IDownloadVersion[]> {
+  private async readDownloadVersionsAsync(downloadId: number): Promise<IDownloadVersion[]> {
     const response: AxiosResponse<Array<IDownloadVersion>> = await this.axiosInstance.get(
       `downloads/${downloadId}/versions`
     );
@@ -109,7 +131,7 @@ export class DokuMateReleaseClient {
     return response.data;
   }
 
-  private async postDownloadVersionAsync(
+  private async createDownloadVersionAsync(
     downloadId: number,
     version: string,
     url: string

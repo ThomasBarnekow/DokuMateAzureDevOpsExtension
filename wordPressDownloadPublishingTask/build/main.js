@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const dokuMateReleaseClient_1 = require("./dokuMateReleaseClient");
+const downloadMonitorRestClient_1 = require("./downloadMonitorRestClient");
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -22,7 +22,7 @@ function main() {
             const url = "https://barnekow.me/SoftwareUpdate/Bundle/DokuMateForOfficeSetup-2.8.3.txt";
             // authenticate.
             console.log("Authenticating ...");
-            const client = new dokuMateReleaseClient_1.DokuMateReleaseClient(hostname);
+            const client = new downloadMonitorRestClient_1.DownloadMonitorRestClient(hostname);
             yield client.authenticateAsync(username, password);
             // create download version.
             console.log("Publishing download version ...");

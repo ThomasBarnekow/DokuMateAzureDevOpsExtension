@@ -1,11 +1,20 @@
 /**
  * Represents an authentication response.
  */
-export interface IJwtAuthResponseData {
+export interface IJwtAuthUserCredentials {
   token: string;
   user_email: string;
   user_nicename: string;
   user_display_name: string;
+}
+
+/**
+ * Represents a date as used in WordPress.
+ */
+export interface IWordPressDate {
+  date: string;
+  timezone_type: number;
+  timezone: string;
 }
 
 /**
@@ -17,7 +26,7 @@ export interface IDownload {
   title: string;
   slug: string;
   author: number;
-  download_link: string;
+  downloadLink: string;
 }
 
 /**
@@ -25,19 +34,10 @@ export interface IDownload {
  */
 export interface IDownloadVersion {
   id: number;
-  download_id: number;
+  downloadId: number;
   version: string;
-  menu_order: number;
+  menuOrder: number;
   date: IWordPressDate;
   url: string;
-  download_count: number;
-}
-
-/**
- * Represents a date as used in WordPress.
- */
-export interface IWordPressDate {
-  date: string;
-  timezone_type: number;
-  timezone: string;
+  downloadCount: number;
 }

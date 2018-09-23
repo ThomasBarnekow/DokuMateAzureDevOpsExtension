@@ -11,20 +11,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const glob = require("glob");
 const tl = require("vsts-task-lib/task");
-const dokuMateReleaseClient_1 = require("./dokuMateReleaseClient");
+const downloadMonitorRestClient_1 = require("./downloadMonitorRestClient");
 /**
- * Represents the DokuMate Release Task.
+ * WordPress Download Publishing Task
  */
-class DokuMateReleaseTask {
-    /**
-     * Create new download version.
-     */
+class Task {
     run() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // gather all input parameters
+                // gather all input parameters, throwing exceptions if required parameters
+                // are not provided
                 console.log("Getting input parameters ...");
-                const localFolder = tl.getInput("localFolder", true);
+                const localFolder = tl.getPathInput("localFolder", true);
                 const filePattern = tl.getInput("filePattern", true);
                 const wordPressURL = this.normalizeURL(tl.getInput("wordPressURL", true));
                 const remoteFolder = this.normalizePath(tl.getInput("remoteFolder", true));
@@ -38,15 +36,18 @@ class DokuMateReleaseTask {
                 console.log(`Remote folder:    ${remoteFolder}`);
                 console.log(`Download Title:   ${title}`);
                 console.log(`Download Version: ${version}`);
-                // compute further parameters
+                // determine URL parameter
                 const filenames = glob.sync(filePattern, { cwd: localFolder });
                 const filename = filenames.shift();
+                if (!filename) {
+                    throw new Error(`Searching for '${filePattern}' within local folder did not yield any matching file.`);
+                }
                 const url = `${wordPressURL}/${remoteFolder}/${filename}`;
                 console.log(`Download File:    ${filename}`);
                 console.log(`Download URL:     ${url}`);
                 // authenticate
                 console.log("Authenticating ...");
-                const client = new dokuMateReleaseClient_1.DokuMateReleaseClient(wordPressURL);
+                const client = new downloadMonitorRestClient_1.DownloadMonitorRestClient(wordPressURL);
                 yield client.authenticateAsync(username, password);
                 // create download version
                 console.log("Publishing download version ...");
@@ -78,7 +79,6 @@ class DokuMateReleaseTask {
         return text.replace(/(^\/)|(\/$)/g, "");
     }
 }
-// create and run the DokuMate Release Task.
-const task = new DokuMateReleaseTask();
+const task = new Task();
 task.run();
 //# sourceMappingURL=task.js.map

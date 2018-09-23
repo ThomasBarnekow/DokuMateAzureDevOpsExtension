@@ -10,17 +10,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = require("axios");
 /**
- * DokuMate Release REST Client.
+ * Download Monitor REST Client.
  */
-class DokuMateReleaseClient {
+class DownloadMonitorRestClient {
     /**
      * Instantiates a new DokuMateReleaseClient, using the given wordPressURL.
      *
-     * @param wordPressURL The fully qualified domain name of the Wordpress site
+     * @param wordPressURL The Wordpress site's URL
      */
     constructor(wordPressURL) {
         this.authEndpoint = `${wordPressURL}/wp-json/jwt-auth/v1/token/`;
-        this.dokuMateBaseURL = `${wordPressURL}/wp-json/dokumate/v1/`;
+        this.downloadMonitorBaseURL = `${wordPressURL}/wp-json/download-monitor/v1/`;
         this.axiosInstance = null;
     }
     /**
@@ -44,7 +44,7 @@ class DokuMateReleaseClient {
             }
             // create the axios instance to be used in authenticated requests.
             this.axiosInstance = axios_1.default.create({
-                baseURL: this.dokuMateBaseURL,
+                baseURL: this.downloadMonitorBaseURL,
                 timeout: 2000,
                 headers: {
                     Authorization: `Bearer ${authResponse.data.token}`
@@ -53,34 +53,44 @@ class DokuMateReleaseClient {
         });
     }
     /**
-     * Publishes a new download version if it does not yet exist.
+     * Publishes a new download version, creating the parent download if there is
+     * no download with the given title.
      *
      * @param title   The parent download's title
      * @param version The version string, e.g., "2.8.2"
-     * @param url     The published file's URL, e.g., "https://dokumate.com/SoftwareUpdate/Setup.exe"
+     * @param url     The published file's URL, e.g., "https://domain.com/SoftwareUpdate/Setup.exe"
      */
     publishDownloadVersionAsync(title, version, url) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.axiosInstance) {
                 throw new Error("The client is not authenticated.");
             }
-            const download = yield this.getOrCreateDownloadAsync(title);
-            const downloadVersions = yield this.getDownloadVersionsAsync(download.id);
-            let downloadVersion = downloadVersions.find(v => v.version === version);
-            if (downloadVersion) {
-                return downloadVersion;
+            if (title === null || title.trim().length === 0) {
+                throw new Error("Title must be a non-empty string.");
             }
-            return yield this.postDownloadVersionAsync(download.id, version, url);
+            if (version === null || version.trim().length === 0) {
+                throw new Error("Version must be a non-empty string.");
+            }
+            if (url === null || url.trim().length === 0) {
+                throw new Error("URL must be a non-empty string.");
+            }
+            const download = yield this.readOrCreateDownloadAsync(title);
+            return yield this.createDownloadVersionAsync(download.id, version, url);
         });
     }
-    getOrCreateDownloadAsync(title) {
+    readOrCreateDownloadAsync(title) {
         return __awaiter(this, void 0, void 0, function* () {
-            const downloads = yield this.getDownloadsAsync();
-            const download = downloads.find(d => d.title === title);
-            return download ? download : yield this.postDownloadAsync(title);
+            // we'll make sure titles don't contain leading or trailing spaces
+            const trimmedTitle = title.trim();
+            const upperCaseTitle = trimmedTitle.toUpperCase();
+            // find download with matching title, ignoring case
+            const downloads = yield this.readDownloadsAsync();
+            const download = downloads.find(d => d.title !== null && d.title.trim().toUpperCase() === upperCaseTitle);
+            // return the matching download, if any, or create a new one with the desired title.
+            return download ? download : yield this.createDownloadAsync(trimmedTitle);
         });
     }
-    getDownloadsAsync() {
+    readDownloadsAsync() {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.axiosInstance.get("downloads");
             if (response.status !== 200) {
@@ -89,7 +99,7 @@ class DokuMateReleaseClient {
             return response.data;
         });
     }
-    postDownloadAsync(title) {
+    createDownloadAsync(title) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.axiosInstance.post("downloads", {
                 title: title
@@ -100,7 +110,7 @@ class DokuMateReleaseClient {
             return response.data;
         });
     }
-    getDownloadVersionsAsync(downloadId) {
+    readDownloadVersionsAsync(downloadId) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.axiosInstance.get(`downloads/${downloadId}/versions`);
             if (response.status !== 200) {
@@ -109,7 +119,7 @@ class DokuMateReleaseClient {
             return response.data;
         });
     }
-    postDownloadVersionAsync(downloadId, version, url) {
+    createDownloadVersionAsync(downloadId, version, url) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.axiosInstance.post(`downloads/${downloadId}/versions`, {
                 version: version,
@@ -122,5 +132,5 @@ class DokuMateReleaseClient {
         });
     }
 }
-exports.DokuMateReleaseClient = DokuMateReleaseClient;
-//# sourceMappingURL=dokuMateReleaseClient.js.map
+exports.DownloadMonitorRestClient = DownloadMonitorRestClient;
+//# sourceMappingURL=downloadMonitorRestClient.js.map

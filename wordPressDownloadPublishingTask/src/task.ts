@@ -1,22 +1,20 @@
 import path = require("path");
 import glob = require("glob");
 import tl = require("vsts-task-lib/task");
-import { DokuMateReleaseClient } from "./dokuMateReleaseClient";
+import { DownloadMonitorRestClient } from "./downloadMonitorRestClient";
 import { IDownloadVersion } from "./interfaces";
 
 /**
- * Represents the DokuMate Release Task.
+ * WordPress Download Publishing Task
  */
-class DokuMateReleaseTask {
-  /**
-   * Create new download version.
-   */
+class Task {
   public async run(): Promise<void> {
     try {
-      // gather all input parameters
+      // gather all input parameters, throwing exceptions if required parameters
+      // are not provided
       console.log("Getting input parameters ...");
 
-      const localFolder: string = tl.getInput("localFolder", true);
+      const localFolder: string = tl.getPathInput("localFolder", true);
       const filePattern: string = tl.getInput("filePattern", true);
 
       const wordPressURL: string = this.normalizeURL(tl.getInput("wordPressURL", true));
@@ -37,9 +35,15 @@ class DokuMateReleaseTask {
       console.log(`Download Title:   ${title}`);
       console.log(`Download Version: ${version}`);
 
-      // compute further parameters
+      // determine URL parameter
       const filenames: string[] = glob.sync(filePattern, { cwd: localFolder });
       const filename: string = filenames.shift();
+      if (!filename) {
+        throw new Error(
+          `Searching for '${filePattern}' within local folder did not yield any matching file.`
+        );
+      }
+
       const url: string = `${wordPressURL}/${remoteFolder}/${filename}`;
 
       console.log(`Download File:    ${filename}`);
@@ -47,7 +51,7 @@ class DokuMateReleaseTask {
 
       // authenticate
       console.log("Authenticating ...");
-      const client: DokuMateReleaseClient = new DokuMateReleaseClient(wordPressURL);
+      const client: DownloadMonitorRestClient = new DownloadMonitorRestClient(wordPressURL);
       await client.authenticateAsync(username, password);
 
       // create download version
@@ -60,7 +64,6 @@ class DokuMateReleaseTask {
 
       // done
       console.log(`Created download version: ${JSON.stringify(downloadVersion)}.`);
-
       tl.setResult(
         tl.TaskResult.Succeeded,
         `Created download version: ${JSON.stringify(downloadVersion)}.`
@@ -93,6 +96,5 @@ class DokuMateReleaseTask {
   }
 }
 
-// create and run the DokuMate Release Task.
-const task: DokuMateReleaseTask = new DokuMateReleaseTask();
+const task: Task = new Task();
 task.run();

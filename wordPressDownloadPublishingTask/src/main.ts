@@ -1,4 +1,4 @@
-import { DokuMateReleaseClient } from "./dokuMateReleaseClient";
+import { DownloadMonitorRestClient } from "./downloadMonitorRestClient";
 import { IDownloadVersion } from "./interfaces";
 
 async function main(): Promise<void> {
@@ -16,7 +16,7 @@ async function main(): Promise<void> {
 
     // authenticate.
     console.log("Authenticating ...");
-    const client: DokuMateReleaseClient = new DokuMateReleaseClient(hostname);
+    const client: DownloadMonitorRestClient = new DownloadMonitorRestClient(hostname);
     await client.authenticateAsync(username, password);
 
     // create download version.

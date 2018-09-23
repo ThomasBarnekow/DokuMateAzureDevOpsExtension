@@ -1,7 +1,7 @@
 {
-  "name": "dokumate-release-task",
-  "version": "0.1.0",
-  "description": "DokuMate Release Task",
+  "name": "wordpress-download-publishing-task",
+  "version": "0.5.1",
+  "description": "WordPress Download Publishing Task",
   "main": "./build/task.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -12,6 +12,10 @@
   },
   "author": "Thomas Barnekow",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThomasBarnekow/DokuMateAzureDevOpsExtension"
+  },
   "dependencies": {
     "@types/glob": "^7.1.0",
     "axios": "^0.18.0",

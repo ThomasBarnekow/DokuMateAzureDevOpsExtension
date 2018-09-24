@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosResponse, AxiosError } from "axios";
 import { IJwtAuthUserCredentials, IDownload, IDownloadVersion } from "./interfaces";
 
 /**
@@ -32,15 +32,14 @@ export class DownloadMonitorRestClient {
     // reset client state.
     this.axiosInstance = null;
 
-    // authenticate with WordPress server.
-    let authResponse: AxiosResponse<IJwtAuthUserCredentials> = await axios.post(this.authEndpoint, {
-      username: username,
-      password: password
-    });
-
-    if (authResponse.status !== 200) {
-      throw new Error(`Authentication was not successful: "${authResponse.statusText}".`);
-    }
+    // authenticate with WordPress server, retrying the request twice and
+    // initially waiting for 3000 ms before trying again
+    let authResponse: AxiosResponse<IJwtAuthUserCredentials> = await this.retrieveAuthTokenAsync(
+      username,
+      password,
+      2,
+      3000
+    );
 
     // create the axios instance to be used in authenticated requests.
     this.axiosInstance = axios.create({
@@ -50,6 +49,64 @@ export class DownloadMonitorRestClient {
         Authorization: `Bearer ${authResponse.data.token}`
       }
     });
+  }
+
+  private async retrieveAuthTokenAsync(
+    username: string,
+    password: string,
+    retryCount: number,
+    retryTimeout: number
+  ): Promise<AxiosResponse<IJwtAuthUserCredentials>> {
+    try {
+      // authenticate with WordPress server
+      console.log(`Sending POST request to '${this.authEndpoint}' ...`);
+      return await axios.post(this.authEndpoint, {
+        username: username,
+        password: password
+      });
+    } catch (error) {
+      console.log("POST request was not successful:");
+      this.logAxiosError(error);
+
+      // to deal with intermittent server errors, we'll retry the request after
+      // a timeout, which we double each time we retry
+      if (error.response && error.response.status >= 500 && retryCount > 0) {
+        console.log(`Waiting ${retryTimeout} ms before trying again ...`);
+        await this.timeoutAsync(retryTimeout);
+        return await this.retrieveAuthTokenAsync(
+          username,
+          password,
+          retryCount - 1,
+          retryTimeout * 2
+        );
+      }
+
+      // if we've tried enough, we'll just throw the error
+      console.log("Giving up :-(");
+      throw error;
+    }
+  }
+
+  private logAxiosError(error: AxiosError): void {
+    if (error.response) {
+      // the request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response);
+    } else if (error.request) {
+      // the request was made but no response was received; 'error.request'
+      // is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.log(error.request);
+    } else {
+      // something happened in setting up the request that triggered an Error
+      console.log("Error", error.message);
+    }
+
+    console.log(error.config);
+  }
+
+  private async timeoutAsync(ms: number): Promise<void> {
+    return new Promise<void>(res => setTimeout(res, ms));
   }
 
   /**

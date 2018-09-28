@@ -1,0 +1,79 @@
+{
+  "id": "ce504863-b2e5-4ebb-a479-bb8579821f85",
+  "name": "SFTPFileUploadTask",
+  "friendlyName": "SFTP File Upload Task",
+  "description": "Uploads files to an SFTP server.",
+  "author": "Thomas Barnekow",
+  "helpMarkDown": "...",
+  "category": "Utility",
+  "visibility": ["Release"],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "1",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "SFTP File Upload",
+  "inputs": [
+    {
+      "name": "localFolder",
+      "type": "filePath",
+      "label": "Local Folder",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Local folder containing the file identified by the File Pattern."
+    },
+    {
+      "name": "filePattern",
+      "type": "string",
+      "label": "File Pattern",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "File name or pattern identifying the file (e.g., '\\*.exe', '\\*.msi')."
+    },
+    {
+      "name": "remoteFolder",
+      "type": "string",
+      "label": "Remote Folder",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Remote folder to which the file should be uploaded (e.g., 'path/to/folder')."
+    },
+    {
+      "name": "sftpHost",
+      "type": "string",
+      "label": "SFTP Host",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Fully qualified domain name of SFTP host (e.g., 'host.domain.com')."
+    },
+    {
+      "name": "sftpPort",
+      "type": "number",
+      "label": "SFTP Port",
+      "defaultValue": "22",
+      "required": true,
+      "helpMarkDown": "SFTP port number (e.g., 22, 2222)."
+    },
+    {
+      "name": "sftpUsername",
+      "type": "string",
+      "label": "SFTP Username",
+      "defaultValue": "",
+      "required": true
+    },
+    {
+      "name": "sftpPassword",
+      "type": "string",
+      "label": "WordPress Password",
+      "defaultValue": "",
+      "required": true
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "./build/task.js"
+    }
+  }
+}

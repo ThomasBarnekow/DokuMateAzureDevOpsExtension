@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "dokumate-devops-tools",
-  "version": "0.5.6",
+  "version": "0.6.0",
   "name": "DokuMate DevOps Tools",
   "description": "Collection of DokuMate Azure DevOps tasks",
   "publisher": "ThomasBarnekow",
@@ -21,16 +21,27 @@
   },
   "files": [
     {
+      "path": "sftpFileUploadTask"
+    },
+    {
       "path": "wordPressDownloadPublishingTask"
     }
   ],
   "contributions": [
     {
+      "id": "sftp-file-upload-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": ["ms.vss-distributed-task.tasks"],
+      "properties": {
+        "name": "SFTPFileUploadTask"
+      }
+    },
+    {
       "id": "wordpress-download-publishing-task",
       "type": "ms.vss-distributed-task.task",
       "targets": ["ms.vss-distributed-task.tasks"],
       "properties": {
-        "name": "wordPressDownloadPublishingTask"
+        "name": "WordPressDownloadPublishingTask"
       }
     }
   ]

@@ -34,19 +34,14 @@ export class DownloadMonitorRestClient {
 
     // authenticate with WordPress server, retrying the request twice and
     // initially waiting for 3000 ms before trying again
-    let authResponse: AxiosResponse<IJwtAuthUserCredentials> = await this.retrieveAuthTokenAsync(
-      username,
-      password,
-      2,
-      3000
-    );
+    let token: string = await this.retrieveAuthTokenAsync(username, password, 2, 3000);
 
     // create the axios instance to be used in authenticated requests.
     this.axiosInstance = axios.create({
       baseURL: this.downloadMonitorBaseURL,
       timeout: 2000,
       headers: {
-        Authorization: `Bearer ${authResponse.data.token}`
+        Authorization: `Bearer ${token}`
       }
     });
   }
@@ -56,14 +51,14 @@ export class DownloadMonitorRestClient {
     password: string,
     retryCount: number,
     retryTimeout: number
-  ): Promise<AxiosResponse<IJwtAuthUserCredentials>> {
+  ): Promise<string> {
     try {
-      // authenticate with WordPress server
       console.log(`Sending POST request to '${this.authEndpoint}' ...`);
-      return await axios.post(this.authEndpoint, {
+      const response: AxiosResponse<IJwtAuthUserCredentials> = await axios.post(this.authEndpoint, {
         username: username,
         password: password
       });
+      return response.data.token;
     } catch (error) {
       console.log("POST request was not successful:");
       this.logAxiosError(error);
@@ -91,22 +86,34 @@ export class DownloadMonitorRestClient {
     if (error.response) {
       // the request was made and the server responded with a status code
       // that falls out of the range of 2xx
-      console.log(error.response);
+      console.log("response:");
+      console.log(`status: ${error.response.status}`);
+      console.log(`statusText: '${error.response.statusText}'`);
+      console.log("headers:");
+      console.log(error.response.headers);
+      console.log(`data: '${error.response.data}'`);
     } else if (error.request) {
       // the request was made but no response was received; 'error.request'
       // is an instance of XMLHttpRequest in the browser and an instance of
       // http.ClientRequest in node.js
+      console.log("request:");
       console.log(error.request);
     } else {
       // something happened in setting up the request that triggered an Error
       console.log("Error", error.message);
     }
 
+    console.log("config:");
     console.log(error.config);
   }
 
+  /**
+   * Waits asynchronously for the specified time in milliseconds.
+   *
+   * @param ms The timeout in milliseconds
+   */
   private async timeoutAsync(ms: number): Promise<void> {
-    return new Promise<void>(res => setTimeout(res, ms));
+    return new Promise<void>(resolve => setTimeout(resolve, ms));
   }
 
   /**

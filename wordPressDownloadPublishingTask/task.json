@@ -1,7 +1,7 @@
 {
   "id": "aba2fe80-bd1c-11e8-a5c5-93cca7ba505c",
   "name": "WordPressDownloadPublishingTask",
-  "friendlyName": "WordPress Download Publishing Task",
+  "friendlyName": "WordPress Download Publishing",
   "description": "Publishes a software package on a WordPress site.",
   "author": "Thomas Barnekow",
   "helpMarkDown": "Publishes a software package as a new Download Monitor download version, using the REST endpoint created by the Download Monitor REST API WordPress plugin.",
@@ -11,7 +11,7 @@
   "version": {
     "Major": "0",
     "Minor": "5",
-    "Patch": "7"
+    "Patch": "8"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "WordPress Download Publishing Task",

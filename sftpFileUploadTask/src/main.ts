@@ -1,72 +1,55 @@
-import path = require("path");
-import glob = require("glob");
-import SFTPClient = require("ssh2-sftp-client");
+import * as path from "path";
+import { SFTPUploader } from "./sftpUploader";
 import { performance } from "perf_hooks";
+import * as minimist from "minimist";
+import { flatten } from "./util";
 
+/**
+ * Command Line Interface.
+ */
 class Main {
   public async run(): Promise<void> {
     try {
-      const sftpHost: string = "dokumateprod.sftp.wpengine.com";
-      const sftpPort: number = 2222;
-
-      const sftpUsername: string = "dokumateprod-ftp";
-      const sftpPassword: string = "6WU3R7rw2QX2wr9N";
-
-      const localFolder: string =
-        "C:\\Users\\thoma\\Source\\Repos\\Azure DevOps\\DokuMateExtension\\sftpFileUploadTask\\build";
-      const filePattern: string = "*.js";
-      const localFilePaths: string[] = glob
-        .sync(filePattern, { cwd: localFolder, absolute: true })
-        .map(localFileName => path.normalize(localFileName));
-
-      console.log("Local File Paths:");
-      localFilePaths.forEach(p => console.log(`  - ${p}`));
-
-      const remoteFolder: string = "SoftwareUpdate/Test";
-
-      // connect to SFTP server
-      console.log("\nConnecting ...");
-      const client: SFTPClient = new SFTPClient();
-      await client.connect({
-        host: sftpHost,
-        port: sftpPort,
-        username: sftpUsername,
-        password: sftpPassword
+      // retrieve command line parameters
+      var argv: minimist.ParsedArgs = minimist(process.argv.slice(2), {
+        alias: { h: "help" },
+        default: {
+          port: 22,
+          "local-folder": ".",
+          "file-patterns": "*.*"
+        }
       });
 
-      // perform upload
-      console.log("Uploading " + localFilePaths.length + " files ...\n");
-      for (const localFilePath of localFilePaths) {
-        // determine the local file name relative to the local folder to retain
-        // the local subfolder structure
-        const localFileName: string = path.relative(localFolder, localFilePath);
-        const remoteFilePath: string = `${remoteFolder}/${localFileName}`;
+      const host: string = argv.host;
+      const port: number = parseInt(argv.port, 10);
+      const username: string = argv.username;
+      const password: string = argv.password;
 
-        // ensure the remote file's parent directory exists
-        const remoteDirName: string = path.dirname(remoteFilePath);
-        await client.mkdir(remoteDirName, true);
+      const localFolder: string = path.normalize(argv["local-folder"]);
+      const filePatterns: string[] = this.splitFilePatterns(argv["file-patterns"]);
+      const remoteFolder: string = argv["remote-folder"];
 
-        // now, with that out of the way, let's finally upload our file
-        console.log("Uploading file ...");
-        console.log("  localFilePath: " + localFilePath);
-        console.log("  remoteFilePath: " + remoteFilePath);
-
-        const t0: number = performance.now();
-        await client.put(localFilePath, remoteFilePath);
-        const t1: number = performance.now();
-
-        console.log("Uploaded file in " + ((t1 - t0) / 1000).toFixed(2) + " seconds.\n");
+      if (!remoteFolder) {
+        console.log("The --remote-folder argument must be specified.");
       }
 
-      // disconnect from SFTP server
-      console.log("Disconnecting ...");
-      await client.end();
+      // perform upload
+      const t0: number = performance.now();
+      const uploader: SFTPUploader = new SFTPUploader();
+      await uploader.startSession(host, port, username, password);
+      await uploader.uploadFiles(localFolder, filePatterns, remoteFolder);
+      await uploader.endSession();
+      const t1: number = performance.now();
 
-      // yay, we are done
-      console.log("Successfully uploaded " + localFilePaths.length + " files.");
+      // succeed
+      console.log("Uploaded files in " + ((t1 - t0) / 1000).toFixed(2) + " seconds");
     } catch (error) {
-      console.log(error);
+      console.log("Error:", error);
     }
+  }
+
+  private splitFilePatterns(filePatterns: string): string[] {
+    return filePatterns ? flatten(filePatterns.split(";").map(pattern => pattern.split(":"))) : [];
   }
 }
 

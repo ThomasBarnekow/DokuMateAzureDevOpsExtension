@@ -10,7 +10,7 @@
   "demands": [],
   "version": {
     "Major": "0",
-    "Minor": "2",
+    "Minor": "4",
     "Patch": "0"
   },
   "minimumAgentVersion": "1.95.0",
@@ -22,15 +22,15 @@
       "label": "Local Folder",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "Local folder containing the file identified by the File Pattern."
+      "helpMarkDown": "Local folder containing the files identified by the File Patterns."
     },
     {
-      "name": "filePattern",
-      "type": "string",
-      "label": "File Pattern",
+      "name": "filePatterns",
+      "type": "multiLine",
+      "label": "File Patterns",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "File name or pattern identifying the file (e.g., '\\*.exe', '\\*.msi')."
+      "helpMarkDown": "File names or patterns identifying the file (e.g., '\\*.exe', '\\*.msi')."
     },
     {
       "name": "remoteFolder",
@@ -38,10 +38,10 @@
       "label": "Remote Folder",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "Remote folder to which the file should be uploaded (e.g., 'path/to/folder')."
+      "helpMarkDown": "Remote folder to which the files should be uploaded (e.g., 'path/to/folder')."
     },
     {
-      "name": "sftpHost",
+      "name": "host",
       "type": "string",
       "label": "SFTP Host",
       "defaultValue": "",
@@ -49,7 +49,7 @@
       "helpMarkDown": "Fully qualified domain name of SFTP host (e.g., 'host.domain.com')."
     },
     {
-      "name": "sftpPort",
+      "name": "port",
       "type": "number",
       "label": "SFTP Port",
       "defaultValue": "22",
@@ -57,16 +57,16 @@
       "helpMarkDown": "SFTP port number (e.g., 22, 2222)."
     },
     {
-      "name": "sftpUsername",
+      "name": "username",
       "type": "string",
-      "label": "SFTP Username",
+      "label": "Username",
       "defaultValue": "",
       "required": true
     },
     {
-      "name": "sftpPassword",
+      "name": "password",
       "type": "string",
-      "label": "WordPress Password",
+      "label": "Password",
       "defaultValue": "",
       "required": true
     }

@@ -11,7 +11,7 @@
     "gallery-publish": "tfx extension publish --root .. --output-path .. --token %PAT% --share-with dokumate --rev-version"
   },
   "author": "Thomas Barnekow",
-  "license": "ISC",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/ThomasBarnekow/DokuMateAzureDevOpsExtension"

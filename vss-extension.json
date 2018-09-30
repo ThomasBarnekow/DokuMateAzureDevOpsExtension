@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "dokumate-devops-tools",
-  "version": "0.6.4",
+  "version": "0.6.8",
   "name": "DokuMate DevOps Tools",
   "description": "Collection of DokuMate Azure DevOps tasks",
   "publisher": "ThomasBarnekow",
@@ -15,7 +15,7 @@
     "type": "git",
     "uri": "https://github.com/ThomasBarnekow/DokuMateAzureDevOpsExtension"
   },
-  "tags": ["DokuMate", "REST", "WordPress"],
+  "tags": ["DokuMate", "WordPress", "REST", "SFTP", "Azure", "Release", "Pipelines"],
   "icons": {
     "default": "images/extension-icon.png"
   },

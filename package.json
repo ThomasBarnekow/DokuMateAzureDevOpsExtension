@@ -1,0 +1,36 @@
+{
+  "name": "dokumate-azure-devops-extension",
+  "version": "0.6.8",
+  "description": "DokuMate Azure DevOps Extension",
+  "main": "make.js",
+  "scripts": {
+    "build": "node make.js build",
+    "test": "node make.js test",
+    "prepublish": "npm run build",
+    "publish": "node make.js publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThomasBarnekow/DokuMateAzureDevOpsExtension.git"
+  },
+  "keywords": [
+    "DokuMate",
+    "WordPress",
+    "REST",
+    "SFTP",
+    "Azure",
+    "Release",
+    "Pipelines"
+  ],
+  "author": "Thomas Barnekow",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ThomasBarnekow/DokuMateAzureDevOpsExtension/issues"
+  },
+  "homepage": "https://github.com/ThomasBarnekow/DokuMateAzureDevOpsExtension#readme",
+  "devDependencies": {
+    "minimist": "^1.2.0",
+    "shelljs": "^0.8.2"
+  },
+  "dependencies": {}
+}

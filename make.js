@@ -72,11 +72,10 @@ target.publish = () => {
     );
   }
 
-  // define command
+  // define and execute command
   let command = `tfx extension publish --token ${token}`;
   command += shareWith ? ` --share-with ${shareWith}` : "";
   command += revVersion ? ` --rev-version` : "";
 
-  // execute command
   shell.exec(command);
 };

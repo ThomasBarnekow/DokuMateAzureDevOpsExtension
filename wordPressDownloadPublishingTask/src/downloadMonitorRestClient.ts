@@ -7,6 +7,7 @@ import { IJwtAuthUserCredentials, IDownload, IDownloadVersion } from "./interfac
 export class DownloadMonitorRestClient {
   authEndpoint: string;
   downloadMonitorBaseURL: string;
+  axiosTimeout: number;
   axiosInstance: AxiosInstance;
 
   /**
@@ -14,9 +15,10 @@ export class DownloadMonitorRestClient {
    *
    * @param wordPressURL The Wordpress site's URL
    */
-  public constructor(wordPressURL: string) {
+  public constructor(wordPressURL: string, axiosTimeout: number = 10000) {
     this.authEndpoint = `${wordPressURL}/wp-json/jwt-auth/v1/token/`;
     this.downloadMonitorBaseURL = `${wordPressURL}/wp-json/download-monitor/v1/`;
+    this.axiosTimeout = axiosTimeout;
 
     this.axiosInstance = null;
   }
@@ -39,7 +41,7 @@ export class DownloadMonitorRestClient {
     // create the axios instance to be used in authenticated requests.
     this.axiosInstance = axios.create({
       baseURL: this.downloadMonitorBaseURL,
-      timeout: 2000,
+      timeout: 10000,
       headers: {
         Authorization: `Bearer ${token}`
       }

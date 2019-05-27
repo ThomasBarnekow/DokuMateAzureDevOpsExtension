@@ -51,11 +51,15 @@ class Task {
 
       // authenticate
       console.log("Authenticating ...");
-      const client: DownloadMonitorRestClient = new DownloadMonitorRestClient(wordPressURL);
+      const timeout: number = 10000;
+      const client: DownloadMonitorRestClient = new DownloadMonitorRestClient(
+        wordPressURL,
+        timeout
+      );
       await client.authenticateAsync(username, password);
 
       // create download version
-      console.log("Publishing download version ...");
+      console.log(`Publishing download version (timing out after ${timeout} ms) ...`);
       const downloadVersion: IDownloadVersion = await client.publishDownloadVersionAsync(
         title,
         version,

@@ -1,6 +1,6 @@
 {
   "name": "wordpress-download-publishing-task",
-  "version": "0.5.6",
+  "version": "0.5.9",
   "description": "WordPress Download Publishing Task",
   "main": "./build/task.js",
   "scripts": {

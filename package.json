@@ -1,6 +1,6 @@
 {
   "name": "dokumate-azure-devops-extension",
-  "version": "0.6.9",
+  "version": "0.6.10",
   "description": "DokuMate Azure DevOps Extension",
   "main": "make.js",
   "scripts": {

@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "dokumate-devops-tools",
-  "version": "0.6.9",
+  "version": "0.6.10",
   "name": "DokuMate DevOps Tools",
   "description": "Collection of DokuMate Azure DevOps tasks",
   "publisher": "ThomasBarnekow",

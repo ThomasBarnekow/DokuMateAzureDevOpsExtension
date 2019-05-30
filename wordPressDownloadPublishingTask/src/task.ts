@@ -1,6 +1,6 @@
 import path = require("path");
 import glob = require("glob");
-import tl = require("vsts-task-lib/task");
+import tl = require("azure-pipelines-task-lib/task");
 import { DownloadMonitorRestClient } from "./downloadMonitorRestClient";
 import { IDownloadVersion } from "./interfaces";
 

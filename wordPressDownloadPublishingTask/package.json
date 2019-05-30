@@ -1,6 +1,6 @@
 {
   "name": "wordpress-download-publishing-task",
-  "version": "0.5.9",
+  "version": "0.5.10",
   "description": "WordPress Download Publishing Task",
   "main": "./build/task.js",
   "scripts": {
@@ -17,14 +17,14 @@
     "url": "https://github.com/ThomasBarnekow/DokuMateAzureDevOpsExtension"
   },
   "dependencies": {
-    "@types/glob": "^7.1.0",
+    "@types/glob": "^7.1.1",
     "axios": "^0.18.0",
-    "glob": "^7.1.3",
-    "util": "^0.11.0",
-    "vsts-task-lib": "^2.6.1"
+    "azure-pipelines-task-lib": "^2.8.0",
+    "glob": "^7.1.4",
+    "util": "^0.11.1"
   },
   "devDependencies": {
-    "@types/node": "^10.10.1",
-    "@types/q": "^1.5.1"
+    "@types/node": "^10.14.7",
+    "@types/q": "^1.5.2"
   }
 }

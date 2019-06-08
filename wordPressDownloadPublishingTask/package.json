@@ -1,6 +1,6 @@
 {
   "name": "wordpress-download-publishing-task",
-  "version": "0.5.10",
+  "version": "0.6.12",
   "description": "WordPress Download Publishing Task",
   "main": "./build/task.js",
   "scripts": {
@@ -18,13 +18,13 @@
   },
   "dependencies": {
     "@types/glob": "^7.1.1",
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "azure-pipelines-task-lib": "^2.8.0",
     "glob": "^7.1.4",
     "util": "^0.11.1"
   },
   "devDependencies": {
-    "@types/node": "^10.14.7",
+    "@types/node": "^10.14.8",
     "@types/q": "^1.5.2"
   }
 }

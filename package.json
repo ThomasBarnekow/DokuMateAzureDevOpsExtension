@@ -1,6 +1,6 @@
 {
   "name": "dokumate-azure-devops-extension",
-  "version": "0.6.10",
+  "version": "0.6.12",
   "description": "DokuMate Azure DevOps Extension",
   "main": "make.js",
   "scripts": {
@@ -30,7 +30,7 @@
   "homepage": "https://github.com/ThomasBarnekow/DokuMateAzureDevOpsExtension#readme",
   "devDependencies": {
     "minimist": "^1.2.0",
-    "shelljs": "^0.8.2"
+    "shelljs": "^0.8.3"
   },
   "dependencies": {}
 }

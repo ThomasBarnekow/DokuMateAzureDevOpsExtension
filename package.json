@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/ThomasBarnekow/DokuMateAzureDevOpsExtension#readme",
   "devDependencies": {
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.2",
     "shelljs": "^0.8.3"
   },
   "dependencies": {}
